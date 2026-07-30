@@ -39,10 +39,8 @@ jobs:
 
       - name: Fix Capacitor Android Configurations
         run: |
-          if [ -f "android/capacitor-cordova-android-plugins/build.gradle" ]; then
-            sed -i 's/8.13.0/8.2.1/g' android/capacitor-cordova-android-plugins/build.gradle
-            sed -i 's/VERSION_21/VERSION_17/g' android/capacitor-cordova-android-plugins/build.gradle
-          fi
+          find node_modules/@capacitor android -name "build.gradle" -exec sed -i 's/8.13.0/8.2.1/g' {} + 2>/dev/null || true
+          find node_modules/@capacitor android -name "build.gradle" -exec sed -i 's/VERSION_21/VERSION_17/g' {} + 2>/dev/null || true
 
       - name: Ensure Gradle Wrapper
         run: |
