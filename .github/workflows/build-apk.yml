@@ -28,8 +28,8 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
-      - name: Install NPM Dependencies
-        run: npm ci || npm install
+      - name: Install Dependencies
+        run: npm ci
 
       - name: Build Web Assets
         run: npm run build
