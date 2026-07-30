@@ -20,12 +20,12 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '21'
+          java-version: '17'
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: '20'
           cache: 'npm'
 
       - name: Install Dependencies
@@ -37,25 +37,34 @@ jobs:
       - name: Sync Capacitor Android
         run: npx cap sync android
 
+      - name: Fix Capacitor Android Configurations
+        run: |
+          if [ -f "android/capacitor-cordova-android-plugins/build.gradle" ]; then
+            sed -i 's/8.13.0/8.2.1/g' android/capacitor-cordova-android-plugins/build.gradle
+            sed -i 's/VERSION_21/VERSION_17/g' android/capacitor-cordova-android-plugins/build.gradle
+          fi
+
+      - name: Ensure Gradle Wrapper
+        run: |
+          cd android
+          if [ ! -f "gradle/wrapper/gradle-wrapper.jar" ] || ! jar tf gradle/wrapper/gradle-wrapper.jar org/gradle/wrapper/GradleWrapperMain.class > /dev/null 2>&1; then
+            echo "Gradle wrapper JAR missing or invalid. Downloading Gradle wrapper 8.2.1..."
+            mkdir -p gradle/wrapper
+            curl -sSL -o gradle/wrapper/gradle-wrapper.jar https://raw.githubusercontent.com/gradle/gradle/v8.2.1/gradle/wrapper/gradle-wrapper.jar
+          fi
+          chmod +x gradlew
+
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.2.1'
           validate-wrappers: false
 
-      - name: Ensure Gradle Wrapper
-        run: |
-          cd android
-          if [ ! -f "gradle/wrapper/gradle-wrapper.jar" ] || [ ! -s "gradle/wrapper/gradle-wrapper.jar" ]; then
-            echo "Gradle wrapper JAR is missing or empty. Generating Gradle wrapper..."
-            gradle wrapper --gradle-version 8.2.1
-          fi
-
       - name: Build Debug APK with Gradle
         run: |
           cd android
-          chmod +x gradlew || true
-          ./gradlew assembleDebug --stacktrace || gradle assembleDebug --stacktrace
+          chmod +x gradlew
+          ./gradlew assembleDebug --stacktrace
 
       - name: Upload Debug APK Artifact
         uses: actions/upload-artifact@v4
