@@ -20,7 +20,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '17'
+          java-version: '21'
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -42,8 +42,7 @@ jobs:
 
       - name: Fix Capacitor Android Configurations
         run: |
-          find node_modules/@capacitor android -name "build.gradle" -exec sed -i 's/8.13.0/8.2.1/g' {} + 2>/dev/null || true
-          find node_modules/@capacitor android -name "build.gradle" -exec sed -i 's/VERSION_21/VERSION_17/g' {} + 2>/dev/null || true
+          find node_modules/@capacitor android -name "*.gradle" -exec sed -i 's/8.13.0/8.2.1/g' {} + 2>/dev/null || true
 
       - name: Ensure Gradle Wrapper
         run: |
