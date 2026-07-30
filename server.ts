@@ -1,13 +1,9 @@
 import express from 'express';
 import path from 'path';
-import { fileURLToPath } from 'url';
 import { createServer as createViteServer } from 'vite';
 import { GoogleGenAI } from '@google/genai';
 import { DEFAULT_PAINT_TYPES, COMPANY_DETAILS } from './src/data/paintData.js';
 import { BookingData, PaintTypeOption } from './src/types.js';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 // In-memory data store for live app state
 let currentPaintTypes: PaintTypeOption[] = [...DEFAULT_PAINT_TYPES];
