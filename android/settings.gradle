@@ -1,2 +1,5 @@
 include ':app'
 apply from: 'capacitor.settings.gradle'
+if (file('capacitor-cordova-android-plugins').exists()) {
+    include ':capacitor-cordova-android-plugins'
+}
